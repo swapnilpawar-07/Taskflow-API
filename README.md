@@ -1,14 +1,14 @@
 # TaskFlow API
 
-A production-style Task Management REST API built with FastAPI, demonstrating the patterns recruiters and interviewers expect from a backend/full-stack SDE candidate: JWT authentication, per-user data isolation, pagination and filtering, rate limiting, input validation, auto-generated API docs, Docker packaging, and a tested CI pipeline.
+A production-style Task Management REST API built with FastAPI. I built this to practice and demonstrate backend engineering patterns beyond basic CRUD: JWT authentication, per-user data isolation, pagination and filtering, rate limiting, input validation, auto-generated API docs, Docker packaging, and a tested CI pipeline.
 
-Built as a portfolio project to demonstrate production API design — not tied to a specific business domain, so the same patterns apply directly to real-world backend work.
+It's built around a generic task-management domain so the focus stays on the API design and engineering practices themselves, rather than any particular business logic — the same patterns here (auth, authorization, validation, testing, containerization) apply directly to real-world backend work.
 
 ---
 
-## Why This Project
+## Why I Built It This Way
 
-Most portfolio API projects stop at "CRUD works." This one focuses on what separates a toy project from a production-minded one:
+I wanted this to go beyond "CRUD works" and actually reflect what a production-minded backend service looks like:
 
 - **Auth done properly** — JWT with expiry, hashed passwords (bcrypt), no plaintext or hash leakage in responses
 - **Authorization, not just authentication** — every task is scoped to its owner; users cannot read, edit, or delete each other's data (verified by test, not just assumed)
@@ -78,8 +78,8 @@ taskflow-api/
 Requires Python 3.12+.
 
 ```bash
-git clone <your-repo-url>
-cd taskflow-api
+git clone https://github.com/swapnilpawar-07/Taskflow-API.git
+cd Taskflow-API
 
 python -m venv venv
 source venv/bin/activate      # Windows: venv\Scripts\activate
@@ -90,7 +90,7 @@ cp .env.example .env           # defaults work out of the box (SQLite)
 uvicorn app.main:app --reload
 ```
 
-The API is now running at `http://127.0.0.1:8000`. Interactive docs: `http://127.0.0.1:8000/docs`.
+The API runs at `http://127.0.0.1:8000`. Interactive docs: `http://127.0.0.1:8000/docs`.
 
 ---
 
@@ -209,14 +209,14 @@ curl "http://127.0.0.1:8000/tasks?limit=5" \
 
 - **Layered structure** — routers handle HTTP concerns only; `crud.py` owns all database access; `schemas.py` defines the API contract independently of the ORM models in `models.py`. This keeps request/response shapes decoupled from storage schema.
 - **SQLite for dev, Postgres for prod** — `DATABASE_URL` is the single source of truth; switching backends requires no code changes, only an env var.
-- **In-memory rate limiting by default** — fine for a single-instance deployment. For multi-instance production deployments, swap `Limiter`'s storage backend to Redis (one-line change in `app/rate_limiter.py`).
-- **Schema managed via `create_all` for now** — appropriate for a project at this stage; a real production system with evolving schema would move to Alembic migrations (see Future Enhancements).
+- **In-memory rate limiting by default** — fine for a single-instance deployment. For multi-instance production deployments, I'd swap the `Limiter`'s storage backend to Redis (one-line change in `app/rate_limiter.py`).
+- **Schema managed via `create_all` for now** — appropriate for a project at this stage; a real production system with evolving schema would move to Alembic migrations (see below).
 
 ---
 
 ## Known Limitations
 
-- Schema changes currently require re-creating tables — no migration tooling wired up yet (see Future Enhancements)
+- Schema changes currently require re-creating tables — no migration tooling wired up yet
 - Rate limiting is in-memory, so limits reset if the process restarts and aren't shared across multiple instances/workers
 - No refresh-token flow — access tokens are valid for a fixed window (default 60 minutes) with no silent renewal
 - No role-based access control — all authenticated users have identical permissions over their own data
@@ -235,9 +235,7 @@ curl "http://127.0.0.1:8000/tasks?limit=5" \
 
 ---
 
-## Learning Outcomes
-
-Building this project reinforced:
+## What I Learned Building This
 
 - Designing a layered FastAPI application (routers → dependencies → CRUD → ORM)
 - JWT-based authentication and per-resource authorization

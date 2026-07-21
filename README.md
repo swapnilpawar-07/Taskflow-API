@@ -1,3 +1,4 @@
+![CI](https://github.com/swapnilpawar-07/Taskflow-API/actions/workflows/ci.yml/badge.svg)
 # TaskFlow API
 
 A production-style Task Management REST API built with FastAPI. I built this to practice and demonstrate backend engineering patterns beyond basic CRUD: JWT authentication, per-user data isolation, pagination and filtering, rate limiting, input validation, auto-generated API docs, Docker packaging, and a tested CI pipeline.
